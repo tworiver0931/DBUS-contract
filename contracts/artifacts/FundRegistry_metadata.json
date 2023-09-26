@@ -1,0 +1,413 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint96",
+						"name": "id",
+						"type": "uint96"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "payee",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "threshold",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "FundCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint96",
+						"name": "id",
+						"type": "uint96"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "payee",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "threshold",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "FundUpdated",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_payee",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_threshold",
+						"type": "uint256"
+					}
+				],
+				"name": "createFund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint96",
+								"name": "fundId",
+								"type": "uint96"
+							},
+							{
+								"internalType": "contract IERC20",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FundRegistry.Donation",
+						"name": "_donation",
+						"type": "tuple"
+					}
+				],
+				"name": "donate",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "fundCount",
+				"outputs": [
+					{
+						"internalType": "uint96",
+						"name": "",
+						"type": "uint96"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "",
+						"type": "uint96"
+					}
+				],
+				"name": "funds",
+				"outputs": [
+					{
+						"internalType": "uint96",
+						"name": "id",
+						"type": "uint96"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint48",
+						"name": "createdAt",
+						"type": "uint48"
+					},
+					{
+						"internalType": "uint48",
+						"name": "updatedAt",
+						"type": "uint48"
+					},
+					{
+						"internalType": "address",
+						"name": "payee",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "threshold",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalAmount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllFunds",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint96",
+								"name": "id",
+								"type": "uint96"
+							},
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "uint48",
+								"name": "createdAt",
+								"type": "uint48"
+							},
+							{
+								"internalType": "uint48",
+								"name": "updatedAt",
+								"type": "uint48"
+							},
+							{
+								"internalType": "address",
+								"name": "payee",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "threshold",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FundRegistry.Fund[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "_id",
+						"type": "uint96"
+					}
+				],
+				"name": "getFundPayee",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "_startId",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint96",
+						"name": "_endId",
+						"type": "uint96"
+					}
+				],
+				"name": "getFunds",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint96",
+								"name": "id",
+								"type": "uint96"
+							},
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "uint48",
+								"name": "createdAt",
+								"type": "uint48"
+							},
+							{
+								"internalType": "uint48",
+								"name": "updatedAt",
+								"type": "uint48"
+							},
+							{
+								"internalType": "address",
+								"name": "payee",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "threshold",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FundRegistry.Fund[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "_id",
+						"type": "uint96"
+					},
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_payee",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_threshold",
+						"type": "uint256"
+					}
+				],
+				"name": "updateFund",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Fund.sol": "FundRegistry"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+				"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+			]
+		},
+		"contracts/Fund.sol": {
+			"keccak256": "0xa2dfeb742145d8def436caab2f8212083f60fc3495bb6a12e59668d4667489fc",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://9447ec4777a88106eac115d3bbf85ba8ad49cb18da2cd86e94595ce2e8ec5c2a",
+				"dweb:/ipfs/QmcjBPxSCstRr7214wdTkpFNEUg6A9tx5jwjfZegv7R1vB"
+			]
+		}
+	},
+	"version": 1
+}
