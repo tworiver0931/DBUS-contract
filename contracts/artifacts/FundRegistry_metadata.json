@@ -40,6 +40,12 @@
 					},
 					{
 						"indexed": false,
+						"internalType": "bool",
+						"name": "isEnd",
+						"type": "bool"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "time",
 						"type": "uint256"
@@ -80,6 +86,12 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "isEnd",
+						"type": "bool"
 					},
 					{
 						"indexed": false,
@@ -201,6 +213,11 @@
 						"internalType": "uint256",
 						"name": "totalAmount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isEnd",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -246,6 +263,11 @@
 								"internalType": "uint256",
 								"name": "totalAmount",
 								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isEnd",
+								"type": "bool"
 							}
 						],
 						"internalType": "struct FundRegistry.Fund[]",
@@ -326,6 +348,11 @@
 								"internalType": "uint256",
 								"name": "totalAmount",
 								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isEnd",
+								"type": "bool"
 							}
 						],
 						"internalType": "struct FundRegistry.Fund[]",
@@ -401,11 +428,11 @@
 			]
 		},
 		"contracts/Fund.sol": {
-			"keccak256": "0xa2dfeb742145d8def436caab2f8212083f60fc3495bb6a12e59668d4667489fc",
+			"keccak256": "0x7258eceb82df45e543bb7c73be6afae67af793290b6bcad6cc439c65010c5ec2",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9447ec4777a88106eac115d3bbf85ba8ad49cb18da2cd86e94595ce2e8ec5c2a",
-				"dweb:/ipfs/QmcjBPxSCstRr7214wdTkpFNEUg6A9tx5jwjfZegv7R1vB"
+				"bzz-raw://aa4a957baf018a76023d0d6c3e68c7829e0cd02943a8daf31852cb85d468382f",
+				"dweb:/ipfs/QmXosNPituTKDinCRNs46AXF41jkKLgmqF4mu3uCoxFEjB"
 			]
 		}
 	},
