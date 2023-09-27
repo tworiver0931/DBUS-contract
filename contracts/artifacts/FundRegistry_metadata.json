@@ -107,6 +107,52 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint96",
+						"name": "_fundId",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "createDonation",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "user",
+								"type": "address"
+							},
+							{
+								"internalType": "uint96",
+								"name": "fundId",
+								"type": "uint96"
+							},
+							{
+								"internalType": "uint256",
+								"name": "amount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FundRegistry.Donation",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "_owner",
 						"type": "address"
 					},
@@ -129,26 +175,19 @@
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint96",
-								"name": "fundId",
-								"type": "uint96"
-							},
-							{
-								"internalType": "contract IERC20",
-								"name": "token",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "amount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct FundRegistry.Donation",
-						"name": "_donation",
-						"type": "tuple"
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint96",
+						"name": "fundId",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
 				"name": "donate",
@@ -164,6 +203,40 @@
 						"internalType": "uint96",
 						"name": "",
 						"type": "uint96"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "fundDonations",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint96",
+						"name": "fundId",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -428,11 +501,11 @@
 			]
 		},
 		"contracts/Fund.sol": {
-			"keccak256": "0x7258eceb82df45e543bb7c73be6afae67af793290b6bcad6cc439c65010c5ec2",
+			"keccak256": "0x255431ff2493c5e2ad36ca1026c2d362b77d2946959e70ac3e21b127cf18fe31",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://aa4a957baf018a76023d0d6c3e68c7829e0cd02943a8daf31852cb85d468382f",
-				"dweb:/ipfs/QmXosNPituTKDinCRNs46AXF41jkKLgmqF4mu3uCoxFEjB"
+				"bzz-raw://e7b5a9fa129122139975bcf14699cf7c1ea67f63e82f5963c0883b19c5282dfa",
+				"dweb:/ipfs/QmTeMW526WhpViqDwTcpZXnHZ8cqfNZSc5jfB2MDnbjZKi"
 			]
 		}
 	},
