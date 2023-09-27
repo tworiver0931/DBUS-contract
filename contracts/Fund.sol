@@ -17,13 +17,14 @@ contract FundRegistry {
         address payee; // 토큰 수취인 주소
         uint256 threshold; // 펀딩 임계 토큰량
         uint256 totalAmount; // 현재 펀딩된 토큰량
-        bool isEnd; // 펀딩이 끝났는지지
+        bool isEnd; // 펀딩이 끝났는지
+        Donation[] donations; // 펀딩 참여 기록
         // 펀딩(노선)의 메타데이터도 추가해야함
     }
 
     struct Donation {
+        address user;
         uint96 fundId;
-        IERC20 token;
         uint256 amount;
     }
 
@@ -35,7 +36,7 @@ contract FundRegistry {
         address payee, 
         uint256 indexed threshold, 
         uint256 indexed amount, 
-        bool isEnd, 
+        bool isEnd,
         uint time
     );
     event FundUpdated(
@@ -48,23 +49,50 @@ contract FundRegistry {
         uint time
     );
 
+    function createDonation(
+        address _user,
+        uint96 _fundId,
+        uint256 _amount
+    ) public view returns(Donation[] memory){
+        Donation[] memory newDonation = [Donation(
+            _user,
+            _fundId,
+            _amount
+        )];
+        return newDonation;
+    }
+
     function createFund(
+        address _user,
         address _owner,
         address _payee,
         uint256 _threshold
     ) external {
         uint96 _id = fundCount;
+
+        // Create the first donation
+        Donation[] memory firstDonation = createDonation(
+            _user,
+            _id,
+            0
+        );
+        
+        // Create a fund
         funds[_id] = Fund(
             _id, 
             _owner, 
             uint48(block.timestamp), 
             uint48(block.timestamp), 
-            _payee, 
-            _threshold, 
-            0, 
-            false
+            _payee,
+            _threshold,
+            0,
+            false,
+            firstDonation
         );
+
+        // event
         emit FundCreated(_id, _owner, _payee, _threshold, 0, false, block.timestamp);
+        
         fundCount += 1;
     }
 
@@ -84,7 +112,8 @@ contract FundRegistry {
             _payee, 
             _threshold, 
             _fund.totalAmount,
-            _fund.isEnd
+            _fund.isEnd,
+            _fund.donations
         );
         emit FundUpdated(_id, _owner, _payee, _threshold, _fund.totalAmount, _fund.isEnd, block.timestamp);
     }
@@ -109,8 +138,14 @@ contract FundRegistry {
     }
 
     function donate(
-        Donation calldata _donation
+        address user,
+        uint96 fundId,
+        IERC20 token,
+        uint256 amount
     ) external payable {
+        // Create new donation
+        Donation memory newDonation = createDonation();
+
         // QF 계산
         Fund[] memory updatedFundList = calculateQF(_donation.fundId, _donation.amount);
 
@@ -120,5 +155,6 @@ contract FundRegistry {
     function calculateQF(uint96 _fundId, uint256 _amount) internal view returns (Fund[] memory){
         // 모든 isEnd=false 펀드 정보 불러오기 (펀드 struct에 참여한 유저 정보도 저장)
         // QF 계산 후 업데이트된 펀드 정보 반환
+        
     }
 }
