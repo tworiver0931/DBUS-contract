@@ -107,52 +107,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					},
-					{
-						"internalType": "uint96",
-						"name": "_fundId",
-						"type": "uint96"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
-					}
-				],
-				"name": "createDonation",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "user",
-								"type": "address"
-							},
-							{
-								"internalType": "uint96",
-								"name": "fundId",
-								"type": "uint96"
-							},
-							{
-								"internalType": "uint256",
-								"name": "amount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct FundRegistry.Donation",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "_owner",
 						"type": "address"
 					},
@@ -176,17 +130,17 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "user",
+						"name": "_user",
 						"type": "address"
 					},
 					{
 						"internalType": "uint96",
-						"name": "fundId",
+						"name": "_fundId",
 						"type": "uint96"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "_amount",
 						"type": "uint256"
 					}
 				],
@@ -501,11 +455,11 @@
 			]
 		},
 		"contracts/Fund.sol": {
-			"keccak256": "0x255431ff2493c5e2ad36ca1026c2d362b77d2946959e70ac3e21b127cf18fe31",
+			"keccak256": "0xa7fbef5c4d87e90246efb569855087a0f469acdb39bf0e295d68d755500bd6ca",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://e7b5a9fa129122139975bcf14699cf7c1ea67f63e82f5963c0883b19c5282dfa",
-				"dweb:/ipfs/QmTeMW526WhpViqDwTcpZXnHZ8cqfNZSc5jfB2MDnbjZKi"
+				"bzz-raw://9f6c689d5cd13d2654426263f59114b954238d3cc15517a3d9e1a5364f7758d8",
+				"dweb:/ipfs/QmWZwxwDCxfhYCy2RQ65fKiFZUvGw8Zy3uZzmum5FBP1M5"
 			]
 		}
 	},

@@ -52,14 +52,13 @@ contract FundRegistry {
         address _user,
         uint96 _fundId,
         uint256 _amount
-    ) public returns(Donation memory){
+    ) private {
         Donation memory newDonation = Donation(
             _user,
             _fundId,
             _amount
         );
         fundDonations[_fundId].push(newDonation);
-        return newDonation;
     }
 
     function createFund(
@@ -68,9 +67,6 @@ contract FundRegistry {
         uint256 _threshold
     ) external  {
         uint96 _id = fundCount;
-
-
-        // Create a fund
         funds[_id] = Fund(
             _id, 
             _owner, 
@@ -81,7 +77,6 @@ contract FundRegistry {
             0,
             false
         );
-
 
         // event
         emit FundCreated(_id, _owner, _payee, _threshold, 0, false, block.timestamp);
@@ -130,15 +125,15 @@ contract FundRegistry {
     }
 
     function donate(
-        address user,
-        uint96 fundId,
-        uint256 amount
+        address _user,
+        uint96 _fundId,
+        uint256 _amount
     ) external payable {
         // Create new donation
-        Donation memory newDonation = createDonation(user, fundId, amount);
+        createDonation(_user, _fundId, _amount);
 
         // QF 계산
-        Fund[] memory updatedFundList = calculateQF(newDonation.fundId, newDonation.amount);
+        Fund[] memory updatedFundList = calculateQF(_fundId, _amount);
 
         // 업데이트, 검증
     }
