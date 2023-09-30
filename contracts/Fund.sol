@@ -50,7 +50,12 @@ contract FundRegistry {
         bool isEnd, 
         uint time
     );
-
+    /// @notice Emitted when a donation has been made
+    event FundCompletion(
+        uint96 indexed FundId,
+        uint256 donationAmount,
+        uint256 time
+    );
     function createDonation(
         address _user,
         uint96 _fundId,
@@ -151,7 +156,29 @@ contract FundRegistry {
         calculateQF();
 
         // THRESHOLD 검증
+        Fund[] memory allFunds = getFunds(0, fundCount);
+        
+        for (uint96 fundIdx = 0; fundIdx < fundCount; fundIdx++) {
+            if(allFunds[fundIdx].threshold < allFunds[fundIdx].totalAmount) { //임계량을 넘었는지 체크한다.
+                token.transfer(getFundPayee(fundIdx), allFunds[fundIdx].totalAmount); //돈을 전송한다.
+                emit FundCompletion(
+                    fundIdx,
+                    allFunds[fundIdx].totalAmount,
+                    block.timestamp
+                );
+                funds[fundIdx].isEnd = true; //모금이 완료되었음을 표기한다.
+            }
+
+
+        }
+    // mapping(uint96 => Fund) public funds;
+    // mapping(uint96 => address[]) public fundUsers;
+    // mapping(uint96 => mapping(address => Donation[])) public fundDonations;
     }
+
+    // function deleteFund(uint96 fundIdx) {
+    //     delete fundDonations[fundIdx];
+    // }
 
     function calculateQF() internal {
         // 모든 isEnd=false 펀드 정보 불러오기
@@ -180,7 +207,7 @@ contract FundRegistry {
         }
     }
 
-    function sqrt(uint256 x) private pure returns (uint256 y) {
+    function sqrt(uint256 x) private pure returns (uint256 y) { //solidity는 float을 지원하지 않기 때문에 다음과 같은 sqrt연산 식을 이용한다.
         uint256 z = (x + 1) / 2;
         y = x;
         while (z < y) {
