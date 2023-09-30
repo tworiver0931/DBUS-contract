@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // 펀드를 생성, 업데이트하고 정보를 가지고 올 수 있는 컨트랙트트
 
 contract FundRegistry {
+    IERC20 token;
     uint96 public fundCount;
 
     struct Fund {
@@ -28,9 +29,11 @@ contract FundRegistry {
     }
 
     mapping(uint96 => Fund) public funds;
-    mapping(uint96 => Donation[]) public fundDonations;
+    mapping(uint96 => address[]) public fundUsers;
+    mapping(uint96 => mapping(address => Donation[])) public fundDonations;
+
     event FundCreated(
-        uint96 indexed id, 
+        uint96 indexed id,
         address owner, 
         address payee, 
         uint256 indexed threshold, 
@@ -58,7 +61,19 @@ contract FundRegistry {
             _fundId,
             _amount
         );
-        fundDonations[_fundId].push(newDonation);
+        fundDonations[_fundId][_user].push(newDonation);
+        address[] storage _fundUsers = fundUsers[_fundId];
+
+        bool isAdd = true;
+        for (uint96 i = 0; i < _fundUsers.length; i++){
+            if (_fundUsers[i] == _user){
+                isAdd = false;
+                break;
+            }
+        }
+        if (isAdd){
+            _fundUsers.push(_user);
+        }
     }
 
     function createFund(
@@ -113,7 +128,7 @@ contract FundRegistry {
         require(_endId <= fundCount, "Must be _endId <= fundCount");
         require(_startId <= _endId, "Must be _startId <= _endId");
         Fund[] memory fundList = new Fund[](_endId - _startId);
-        for (uint96 i = _startId; i<_endId; i++){
+        for (uint96 i = _startId; i < _endId; i++){
             fundList[i - _startId] = funds[i];
         }
         return fundList;
@@ -133,14 +148,44 @@ contract FundRegistry {
         createDonation(_user, _fundId, _amount);
 
         // QF 계산
-        Fund[] memory updatedFundList = calculateQF(_fundId, _amount);
+        calculateQF();
 
-        // 업데이트, 검증
+        // THRESHOLD 검증
     }
 
-    function calculateQF(uint96 _fundId, uint256 _amount) internal view returns (Fund[] memory){
-        // 모든 isEnd=false 펀드 정보 불러오기 (펀드 struct에 참여한 유저 정보도 저장)
-        // QF 계산 후 업데이트된 펀드 정보 반환
+    function calculateQF() internal {
+        // 모든 isEnd=false 펀드 정보 불러오기
         
+        // QF formula에 따른 ratio 계산: sum(sqrt(c))**2
+        uint256[] memory ratio = new uint256[](fundCount);
+        uint256 totalOfRatio;
+        for (uint96 i = 0; i < fundCount; i++){
+            uint256 totalOfFund;
+            address[] memory userAddresses = fundUsers[i];
+            for (uint96 j = 0; j < userAddresses.length; j++){
+                uint256 totalOfUser;
+                for (uint96 k = 0; k < fundDonations[i][userAddresses[j]].length; k++){
+                    totalOfUser += fundDonations[i][userAddresses[j]][k].amount;
+                }
+                totalOfFund += sqrt(totalOfUser);
+            }
+            totalOfFund = totalOfFund ** 2;
+            ratio[i] = totalOfFund;
+            totalOfRatio += totalOfFund;
+        }
+
+        // ratio에 따라 각 fund 업데이트
+        for(uint96 i = 0; i < fundCount; i++){
+            funds[i].totalAmount = (ratio[i] * token.balanceOf(address(this))) / totalOfRatio;
+        }
+    }
+
+    function sqrt(uint256 x) private pure returns (uint256 y) {
+        uint256 z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
     }
 }

@@ -170,6 +170,11 @@
 						"type": "uint96"
 					},
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -191,6 +196,30 @@
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint96",
+						"name": "",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "fundUsers",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -455,11 +484,11 @@
 			]
 		},
 		"contracts/Fund.sol": {
-			"keccak256": "0xa7fbef5c4d87e90246efb569855087a0f469acdb39bf0e295d68d755500bd6ca",
+			"keccak256": "0x6d4dd7b8336a0e833080be1a30fe1aacafc33b40417ff721418265730080de41",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9f6c689d5cd13d2654426263f59114b954238d3cc15517a3d9e1a5364f7758d8",
-				"dweb:/ipfs/QmWZwxwDCxfhYCy2RQ65fKiFZUvGw8Zy3uZzmum5FBP1M5"
+				"bzz-raw://7042f57c37466cce8e593dab8a6133b36cec9b7068bae4a0ffd19bf2d3bc7af9",
+				"dweb:/ipfs/QmcL7Fr8CBpEw7YHnHGhaoTrzph3xLPELbijQyXFgNcRGH"
 			]
 		}
 	},
