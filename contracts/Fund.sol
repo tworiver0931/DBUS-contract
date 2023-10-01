@@ -50,7 +50,12 @@ contract FundRegistry {
         bool isEnd, 
         uint time
     );
-
+    /// @notice Emitted when a donation has been made
+    event FundCompletion(
+        uint96 indexed FundId,
+        uint256 donationAmount,
+        uint256 time
+    );
     function createDonation(
         address _user,
         uint96 _fundId,
@@ -151,6 +156,51 @@ contract FundRegistry {
         calculateQF();
 
         // THRESHOLD 검증
+        Fund[] memory allFunds = getFunds(0, fundCount);
+        
+        for (uint96 fundIdx = 0; fundIdx < fundCount; fundIdx++) {
+            if(allFunds[fundIdx].threshold < allFunds[fundIdx].totalAmount) { //임계량을 넘었는지 체크한다.
+                token.transfer(getFundPayee(fundIdx), allFunds[fundIdx].totalAmount); //돈을 전송한다.
+                emit FundCompletion(
+                    fundIdx,
+                    allFunds[fundIdx].totalAmount,
+                    block.timestamp
+                );
+                funds[fundIdx].isEnd = true; //모금이 완료되었음을 표기한다.
+                //deleteFund(fundIdx); // 이걸 사용하면 QF에서 더 많은 시간복잡도가 소요됨.
+                deleteFundByOverwriting(fundIdx); 
+            }
+
+
+        }
+
+    }
+    // mapping(uint96 => Fund) public funds;
+    // mapping(uint96 => address[]) public fundUsers;
+    // mapping(uint96 => mapping(address => Donation[])) public fundDonations;
+    function deleteFund(uint96 fundIdx) public {
+        for(uint96 userIdx = 0; userIdx < fundUsers[fundIdx].length; userIdx++) {
+            delete fundDonations[fundIdx][fundUsers[fundIdx][userIdx]]; //fundDonations객체에서 삭제할 펀드의 모든 유저 기부 목록들을 다 삭제한다.
+        }
+        delete fundUsers[fundIdx]; //fundUsers에서 삭제할 펀드에 해당하는 유저목록을 다 삭제한다.
+        //fundDonations[fundIdx] = fundDonations[fundIdx + 1]; -> error : 매핑을 전체를 한번에 이동할 수 없다.
+    }
+
+    function deleteFundByOverwriting(uint96 deleteIdx) public {
+        //fundDonation 매핑정보 삭제
+        for(uint96 fundIdx = deleteIdx; fundIdx < fundCount; fundIdx++) {
+            for(uint96 userIdx = 0; userIdx < fundUsers[fundIdx+1].length; userIdx++ ) {
+                fundDonations[fundIdx][fundUsers[fundIdx+1][userIdx]] = fundDonations[fundIdx+1][fundUsers[fundIdx+1][userIdx]];
+            }
+        }
+        
+        //fundUsers 매핑정보 삭제
+        for(uint96 fundIdx = deleteIdx; fundIdx < fundCount; fundIdx++) {
+            fundUsers[fundIdx] = fundUsers[fundIdx + 1];
+        }
+
+        //fundCount 감소
+        fundCount = fundCount - 1;
     }
 
     function calculateQF() internal {
@@ -180,7 +230,7 @@ contract FundRegistry {
         }
     }
 
-    function sqrt(uint256 x) private pure returns (uint256 y) {
+    function sqrt(uint256 x) private pure returns (uint256 y) { //solidity는 float을 지원하지 않기 때문에 다음과 같은 sqrt연산 식을 이용한다.
         uint256 z = (x + 1) / 2;
         y = x;
         while (z < y) {
