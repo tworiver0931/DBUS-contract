@@ -167,18 +167,41 @@ contract FundRegistry {
                     block.timestamp
                 );
                 funds[fundIdx].isEnd = true; //모금이 완료되었음을 표기한다.
+                //deleteFund(fundIdx); // 이걸 사용하면 QF에서 더 많은 시간복잡도가 소요됨.
+                deleteFundByOverwriting(fundIdx); 
             }
 
 
         }
+
+    }
     // mapping(uint96 => Fund) public funds;
     // mapping(uint96 => address[]) public fundUsers;
     // mapping(uint96 => mapping(address => Donation[])) public fundDonations;
+    function deleteFund(uint96 fundIdx) public {
+        for(uint96 userIdx = 0; userIdx < fundUsers[fundIdx].length; userIdx++) {
+            delete fundDonations[fundIdx][fundUsers[fundIdx][userIdx]]; //fundDonations객체에서 삭제할 펀드의 모든 유저 기부 목록들을 다 삭제한다.
+        }
+        delete fundUsers[fundIdx]; //fundUsers에서 삭제할 펀드에 해당하는 유저목록을 다 삭제한다.
+        //fundDonations[fundIdx] = fundDonations[fundIdx + 1]; -> error : 매핑을 전체를 한번에 이동할 수 없다.
     }
 
-    // function deleteFund(uint96 fundIdx) {
-    //     delete fundDonations[fundIdx];
-    // }
+    function deleteFundByOverwriting(uint96 deleteIdx) public {
+        //fundDonation 매핑정보 삭제
+        for(uint96 fundIdx = deleteIdx; fundIdx < fundCount; fundIdx++) {
+            for(uint96 userIdx = 0; userIdx < fundUsers[fundIdx+1].length; userIdx++ ) {
+                fundDonations[fundIdx][fundUsers[fundIdx+1][userIdx]] = fundDonations[fundIdx+1][fundUsers[fundIdx+1][userIdx]];
+            }
+        }
+        
+        //fundUsers 매핑정보 삭제
+        for(uint96 fundIdx = deleteIdx; fundIdx < fundCount; fundIdx++) {
+            fundUsers[fundIdx] = fundUsers[fundIdx + 1];
+        }
+
+        //fundCount 감소
+        fundCount = fundCount - 1;
+    }
 
     function calculateQF() internal {
         // 모든 isEnd=false 펀드 정보 불러오기
