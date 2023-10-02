@@ -4,12 +4,13 @@ pragma abicoder v2;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 // 펀드를 생성, 업데이트하고 정보를 가지고 올 수 있는 컨트랙트트
 
 contract FundRegistry {
-    ERC20 token;
+    ERC1155 token;
     uint96 public fundCount;
-    constructor(ERC20 _token) {
+    constructor(ERC1155 _token) {
         token = _token;
     }
     struct Fund {
@@ -28,6 +29,7 @@ contract FundRegistry {
         address user;
         uint96 fundId;
         uint256 amount;
+        bool isTiketUser;
     }
 
     mapping(uint96 => Fund) public funds;
@@ -61,17 +63,20 @@ contract FundRegistry {
     function createDonation(
         address _user,
         uint96 _fundId,
-        uint256 _amount
+        uint256 _amount,
+        bool _isTiketUser
     ) private {
-        require(token.balanceOf(_user) > _amount, "token amount of user not sufficient" );
-        require(token.allowance(_user, address(this)) > _amount, "token allowance shortage");        
-        require(token.transferFrom(_user, address(this), _amount), "token transfer failed");
+
+        require(token.balanceOf(_user, 0) > _amount, "token amount of user not sufficient" );
+        require(token.isApprovedForAll(_user, address(this)), "token allowance shortage");
+        token.safeTransferFrom(_user, address(this), 0, _amount, "0x0");
         
 
         Donation memory newDonation = Donation(
             _user,
             _fundId,
-            _amount
+            _amount,
+            _isTiketUser
         );
         fundDonations[_fundId][_user].push(newDonation);
         address[] storage _fundUsers = fundUsers[_fundId];
@@ -154,20 +159,23 @@ contract FundRegistry {
     function donate(
         address _user,
         uint96 _fundId,
-        uint256 _amount
+        uint256 _amount,
+        bool _isTicketUser
     ) external payable {
         // Create new donation
-        createDonation(_user, _fundId, _amount);
+        createDonation(_user, _fundId, _amount, _isTicketUser);
         
         // QF 계산
+        
         QF();
+        
 
         // THRESHOLD 검증
         
         
         for (uint96 fundIdx = 0; fundIdx < fundCount; fundIdx++) {
             if(funds[fundIdx].threshold < funds[fundIdx].totalAmount) { //임계량을 넘었는지 체크한다.
-                token.transfer(getFundPayee(fundIdx), funds[fundIdx].totalAmount); //돈을 전송한다.
+                token.safeTransferFrom(address(this), getFundPayee(fundIdx), 0, funds[fundIdx].totalAmount, "0x0"); //돈을 전송한다.
                 emit FundCompletion(
                     fundIdx,
                     funds[fundIdx].totalAmount,
@@ -175,6 +183,7 @@ contract FundRegistry {
                 );
                 funds[fundIdx].isEnd = true; //모금이 완료되었음을 표기한다.
                 funds[fundIdx].totalAmount = 0;
+                mintDTiket(fundIdx); //모금이 완료되면 도네이트한 사람들에게 해당 금액의 NFT를 전송한다.
             }
 
 
@@ -182,6 +191,21 @@ contract FundRegistry {
 
     }
 
+    function mintDTiket(uint96 _fundId) public {
+        address[] memory userAddresses = fundUsers[_fundId];
+        uint256 totalTicketFunding;
+        for (uint96 j = 0; j < userAddresses.length; j++){
+
+                for (uint96 k = 0; k < fundDonations[_fundId][userAddresses[j]].length; k++){
+                    if(fundDonations[_fundId][userAddresses[j]][k].isTiketUser == true) { //소량 투자자에 수요만 고려할 수 있도록
+                        totalTicketFunding += fundDonations[_fundId][userAddresses[j]][k].amount;
+                    }
+                }
+                token.safeTransferFrom(address(this), userAddresses[j], _fundId, totalTicketFunding, "0x0" ); //0번 토큰을 funding한 만큼 nft를 전송함.
+        }
+        
+    }
+    
 
     function QF() internal {
         // 모든 isEnd=false 펀드 정보 불러오기
@@ -199,7 +223,9 @@ contract FundRegistry {
             for (uint96 j = 0; j < userAddresses.length; j++){
                 uint256 totalOfUser;
                 for (uint96 k = 0; k < fundDonations[i][userAddresses[j]].length; k++){
-                    totalOfUser += fundDonations[i][userAddresses[j]][k].amount;
+                    if(fundDonations[i][userAddresses[j]][k].isTiketUser == true) { //소량 투자자에 수요만 고려할 수 있도록
+                        totalOfUser += fundDonations[i][userAddresses[j]][k].amount;
+                    }
                 }
                 totalOfFund += sqrt(totalOfUser);
             }
@@ -210,7 +236,7 @@ contract FundRegistry {
 
         // ratio에 따라 각 fund 업데이트
         for(uint96 i = 0; i < fundCount; i++){
-            funds[i].totalAmount = (ratio[i] * token.balanceOf(address(this))) / totalOfRatio;
+            funds[i].totalAmount = (ratio[i] * token.balanceOf(address(this), 0)) / totalOfRatio;
         }
     }
 
@@ -221,5 +247,29 @@ contract FundRegistry {
             y = z;
             z = (x / z + z) / 2;
         }
+    }
+
+    function giveIncentive(uint96 _fundId, uint256 totalIncentive) public {
+        require(msg.sender == funds[_fundId].owner, "only owner can give incentive");
+        uint256 totalFunding;
+        uint256[] memory fundingAmount;
+        address[] memory userAddresses = fundUsers[_fundId];
+        for (uint96 userIdx = 0; userIdx < userAddresses.length; userIdx++){
+            uint256 userAmount;
+            for (uint96 donationIdx = 0; donationIdx < fundDonations[_fundId][userAddresses[userIdx]].length; donationIdx++){
+                if(fundDonations[_fundId][userAddresses[userIdx]][donationIdx].isTiketUser == false) { //대량 투자자에 수요만 고려할 수 있도록
+                    userAmount += fundDonations[_fundId][userAddresses[userIdx]][donationIdx].amount;
+                }
+            }
+            fundingAmount[userIdx] = userAmount;
+            totalFunding += userAmount;
+        }
+        for(uint96 userIdx =0; userIdx < userAddresses.length; userIdx++) {
+            if(fundingAmount[userIdx] != 0) {
+                token.safeTransferFrom(address(this), userAddresses[userIdx], 0, totalIncentive * fundingAmount[userIdx] / totalFunding, "0x0");
+            }
+            
+        }
+            
     }
 }
