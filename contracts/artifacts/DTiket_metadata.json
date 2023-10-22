@@ -623,7 +623,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/DTiket.sol": "DTiket"
+			"contracts/DTicket.sol": "DTiket"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -631,7 +631,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -725,7 +725,7 @@
 				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
 			]
 		},
-		"contracts/DTiket.sol": {
+		"contracts/DTicket.sol": {
 			"keccak256": "0xbf9c39d7ac89cf0d30f63825b8e5834e99ad335875854a4998135a0b486f329d",
 			"license": "MIT",
 			"urls": [
