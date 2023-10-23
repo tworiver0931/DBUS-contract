@@ -214,7 +214,7 @@
 					},
 					{
 						"internalType": "uint256[]",
-						"name": "amounts",
+						"name": "values",
 						"type": "uint256[]"
 					},
 					{
@@ -247,7 +247,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "value",
 						"type": "uint256"
 					},
 					{
@@ -300,7 +300,7 @@
 			}
 		],
 		"devdoc": {
-			"details": "Required interface of an ERC1155 compliant contract, as defined in the https://eips.ethereum.org/EIPS/eip-1155[EIP]. _Available since v3.1._",
+			"details": "Required interface of an ERC1155 compliant contract, as defined in the https://eips.ethereum.org/EIPS/eip-1155[EIP].",
 			"events": {
 				"ApprovalForAll(address,address,bool)": {
 					"details": "Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to `approved`."
@@ -309,7 +309,7 @@
 					"details": "Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all transfers."
 				},
 				"TransferSingle(address,address,address,uint256,uint256)": {
-					"details": "Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`."
+					"details": "Emitted when `value` amount of tokens of type `id` are transferred from `from` to `to` by `operator`."
 				},
 				"URI(string,uint256)": {
 					"details": "Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI. If an {URI} event was emitted for `id`, the standard https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value returned by {IERC1155MetadataURI-uri}."
@@ -318,7 +318,7 @@
 			"kind": "dev",
 			"methods": {
 				"balanceOf(address,uint256)": {
-					"details": "Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address."
+					"details": "Returns the value of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address."
 				},
 				"balanceOfBatch(address[],uint256[])": {
 					"details": "xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length."
@@ -327,10 +327,10 @@
 					"details": "Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}."
 				},
 				"safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": {
-					"details": "xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value."
+					"details": "xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. WARNING: This function can potentially allow a reentrancy attack when transferring tokens to an untrusted contract, when invoking {onERC1155BatchReceived} on the receiver. Ensure to follow the checks-effects-interactions pattern and consider employing reentrancy guards when interacting with untrusted contracts. Emits a {TransferBatch} event. Requirements: - `ids` and `values` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value."
 				},
 				"safeTransferFrom(address,address,uint256,uint256,bytes)": {
-					"details": "Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value."
+					"details": "Transfers a `value` amount of tokens of type `id` from `from` to `to`. WARNING: This function can potentially allow a reentrancy attack when transferring tokens to an untrusted contract, when invoking {onERC1155Received} on the receiver. Ensure to follow the checks-effects-interactions pattern and consider employing reentrancy guards when interacting with untrusted contracts. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `value` amount. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value."
 				},
 				"setApprovalForAll(address,bool)": {
 					"details": "Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller."
@@ -364,10 +364,11 @@
 	},
 	"sources": {
 		"contracts/FundRegistry_flattened.sol": {
-			"keccak256": "0xe88615dd15bbc64395c63796b350c219998cb73fe3f95990347e356d94006041",
+			"keccak256": "0x2a27c49d75074b3c8e1b4fb21fc85ebf8ad4d2734f0e66f709abe07f4e79d21f",
+			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9594f9cbec32942fea397c42b67a0797387d151367e0767950844ffc94d81517",
-				"dweb:/ipfs/Qmcp3Dzxr7PhASzd6u94c5kXYdqkytyxEPXqQyPQYGijNm"
+				"bzz-raw://8a94b4659847532b9f5d70dc931bc99f654e381deb716606a8bf60eed71750c9",
+				"dweb:/ipfs/QmVDThUaX6bELSu2LgMA6C7akBBw4XniM4Qpx7oh9oF96Y"
 			]
 		}
 	},
