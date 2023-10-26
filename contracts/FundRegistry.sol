@@ -67,6 +67,8 @@ contract FundRegistry is ERC1155Holder, Ownable {
     );
     
 
+    event FundUserAdded(uint96 key, address indexed user);
+
     function defaultMintToOwner(uint256 _amount) public onlyOwner {
         token.mint(owner(), 0, _amount, "0x0" ); //0번 토큰을 funding한 만큼 nft를 전송함.
     }
@@ -124,6 +126,7 @@ contract FundRegistry is ERC1155Holder, Ownable {
         }
         if (isAdd){
             _fundUsers.push(_user);
+            emit FundUserAdded(_fundId, _user);
         }
 
     }
