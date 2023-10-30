@@ -8,14 +8,19 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "contracts/DTicket.sol";
 
-// 펀드를 생성, 업데이트하고 정보를 가지고 올 수 있는 컨트랙트트
+// 펀드를 생성, 업데이트하고 정보를 가지고 올 수 있는 컨트랙트.
 
 contract FundRegistry is ERC1155Holder, Ownable {
     DTicket token;
     uint96 public fundCount = 1;
+    
+    //처음 생성될 떄 컨트랙트에 대한 오너를 지정한다.
     constructor(DTicket _token, address initialOwner) Ownable(initialOwner) {
         token = _token;
+        
     }
+
+    //펀드는 각 노선에 대한 구조체로, 해당 노선에는 id와 펀딩에 관련된 정보가 담겨있음.
     struct Fund {
         uint96 id;
         address owner; // 정보 변경할 수 있는 owenr 주소
@@ -28,6 +33,8 @@ contract FundRegistry is ERC1155Holder, Ownable {
         // 펀딩(노선)의 메타데이터도 추가해야함
     }
 
+
+    //각 펀딩 기록이 구조체로 저장된다. 
     struct Donation {
         address user;
         uint96 fundId;
@@ -40,7 +47,7 @@ contract FundRegistry is ERC1155Holder, Ownable {
     mapping(uint96 => mapping(address => Donation[])) public fundDonations;
 
 
-
+    
     event FundCreated(
         uint96 indexed id,
         address owner, 
@@ -59,7 +66,7 @@ contract FundRegistry is ERC1155Holder, Ownable {
         bool isEnd, 
         uint time
     );
-    /// @notice Emitted when a donation has been made
+    /// //펀딩 완료 -> 노선 개설
     event FundCompletion(
         uint96 indexed FundId,
         uint256 donationAmount,
@@ -67,12 +74,25 @@ contract FundRegistry is ERC1155Holder, Ownable {
     );
     
 
-    event FundUserAdded(uint96 key, address indexed user);
+    event FundUserAdded(uint96 indexed key, address user);
+
+
 
     function defaultMintToOwner(uint256 _amount) public onlyOwner {
-        token.mint(owner(), 0, _amount, "0x0" ); //0번 토큰을 funding한 만큼 nft를 전송함.
+        
+        token.mint(owner(), 0, _amount, "0x0" );
     }
 
+
+
+    //탑승시 컨트랙트에 해당 토큰을 전송해 나중에 사용할 수 있는 방법으로 활용
+    function burn(address _user, uint256 _amount, uint96 _fundId) external onlyOwner {
+        require(token.balanceOf(_user, 0) > _amount, "token amount of user not sufficient" );
+        require(token.isApprovedForAll(_user, address(this) ), "token allowance shortage");
+        token.safeTransferFrom(_user, address(this), _fundId, _amount, "0x0");
+    } 
+
+    
     function createFund(
         address _owner,
         address _payee,
@@ -96,12 +116,13 @@ contract FundRegistry is ERC1155Holder, Ownable {
         fundCount += 1;
     }
 
+    //donate(펀딩)시, 해당 정보를 컨트랙트에 기록하는 함수.
     function createDonation(
         address _user,
         uint96 _fundId,
         uint256 _amount
     ) private {
-
+        
         require(token.balanceOf(_user, 0) > _amount, "token amount of user not sufficient" );
         require(token.isApprovedForAll(_user, address(this) ), "token allowance shortage");
         token.safeTransferFrom(_user, address(this), 0, _amount, "0x0");
@@ -131,6 +152,8 @@ contract FundRegistry is ERC1155Holder, Ownable {
 
     }
 
+
+    //펀딩시 donate를 통해 컨트랙트 상태를 기록하고, 해당 펀드가 임계량을 넘었는지 체크하여, 넘었을 경우 해당 펀드 id의 토큰을 유저에게 전송한다.
     function donate(
         address _user,
         uint96 _fundId,
@@ -150,12 +173,10 @@ contract FundRegistry is ERC1155Holder, Ownable {
                 block.timestamp
             );
             funds[_fundIdx].isEnd = true; //모금이 완료되었음을 표기한다.
-            mintDTiket(_fundIdx, 1000); //모금이 완료되면 도네이트한 사람들에게 해당 금액의 NFT를 전송한다.
+            mintDTiket(_fundIdx, 50); //모금이 완료되면 도네이트한 사람들에게 해당 금액의 NFT를 전송한다.
         }
-
-
-        
     }
+
 
     function mintDTiket(uint96 _fundId, uint96 totalTicket) private  {
         uint256 donationAmount = funds[_fundId].donationAmount;
@@ -171,6 +192,7 @@ contract FundRegistry is ERC1155Holder, Ownable {
         }
         
     }
+
 
     function updateFund(
         uint96 _id,
@@ -192,6 +214,8 @@ contract FundRegistry is ERC1155Holder, Ownable {
         );
         emit FundUpdated(_id, _owner, _payee, _threshold, _fund.donationAmount, _fund.isEnd, block.timestamp);
     }
+    
+    
     
     function getAllFunds() external view returns (Fund[] memory){
         return getFunds(0, fundCount);

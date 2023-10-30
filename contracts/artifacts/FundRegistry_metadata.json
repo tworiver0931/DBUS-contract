@@ -170,13 +170,13 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "uint96",
 						"name": "key",
 						"type": "uint96"
 					},
 					{
-						"indexed": true,
+						"indexed": false,
 						"internalType": "address",
 						"name": "user",
 						"type": "address"
@@ -203,6 +203,29 @@
 				],
 				"name": "OwnershipTransferred",
 				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint96",
+						"name": "_fundId",
+						"type": "uint96"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -725,7 +748,7 @@
 		"userdoc": {
 			"events": {
 				"FundCompletion(uint96,uint256,uint256)": {
-					"notice": "Emitted when a donation has been made"
+					"notice": "//펀딩 완료 -> 노선 개설"
 				}
 			},
 			"kind": "user",
@@ -878,11 +901,11 @@
 			]
 		},
 		"contracts/FundRegistry.sol": {
-			"keccak256": "0x7491fea831a035ca11e8fb1138f83a0731f377fb9a1e69da6d19139eca51e9ab",
+			"keccak256": "0x61ab6873b9e226fe39110256735ceaeb3549b8fe46c49828afdd8573f9a2478d",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://887c4d58e569fac3c0ee4f4d1ad4aabb1bb221d996a7c714bdb9e846df0c1858",
-				"dweb:/ipfs/QmPyL73sGEH4LG1SyVNbSdpUeHKkwqqaeEnyMA79UnyArh"
+				"bzz-raw://3061d799d19a13d803ee4778dfae55bb9bd7e798e374efa79f2a490a5d12d279",
+				"dweb:/ipfs/QmXF3sDAc4jC2fABnrVCFgHBVuVTTxxhfnvu5uquC6EGFb"
 			]
 		}
 	},
