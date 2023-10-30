@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Collection of functions related to the address type",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/FundRegistry_flattened.sol": "Address"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/FundRegistry_flattened.sol": {
+			"keccak256": "0xe88615dd15bbc64395c63796b350c219998cb73fe3f95990347e356d94006041",
+			"urls": [
+				"bzz-raw://9594f9cbec32942fea397c42b67a0797387d151367e0767950844ffc94d81517",
+				"dweb:/ipfs/Qmcp3Dzxr7PhASzd6u94c5kXYdqkytyxEPXqQyPQYGijNm"
+			]
+		}
+	},
+	"version": 1
+}
